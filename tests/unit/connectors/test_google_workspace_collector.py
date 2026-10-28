@@ -316,13 +316,19 @@ _V02_STUBS: dict[str, Any] = {
     "https://cloudidentity.googleapis.com/v1/policies?customer=customers/my_customer&pageSize=100": {
         "policies": [
             {
-                "name": "policies/customers/C01234/security.two_step_verification_enforcement",
-                "type": "security.two_step_verification_enforcement",
-                "setting": {
-                    "type": "security.two_step_verification_enforcement",
-                    "value": {"enforcementMode": "ENFORCED"},
+                "name": "policies/e1000000000002",
+                "customer": "customers/C01234",
+                "policyQuery": {
+                    "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-eng'))",
+                    "orgUnit": "orgUnits/ou-eng",
+                    "group": "",
+                    "sortOrder": 2.0,
                 },
-                "orgUnit": {"orgUnitId": "id:ou-eng"},
+                "setting": {
+                    "type": "settings/security.two_step_verification_enforcement",
+                    "value": {"enforcedFrom": "2024-03-01T00:00:00Z"},
+                },
+                "type": "ADMIN",
             }
         ]
     },
@@ -421,7 +427,11 @@ def test_policy_collects_policy_raw_objects() -> None:
     rows = list(collector.collect("policy"))
     assert len(rows) == 1
     assert rows[0].object_type == "policy"
-    assert rows[0].payload["type"] == "security.two_step_verification_enforcement"
+    assert rows[0].provider_id == "policies/e1000000000002"
+    # The payload is passed through untouched: the setting name stays under
+    # `setting.type` and the top-level `type` stays the policy kind.
+    assert rows[0].payload["setting"]["type"] == "settings/security.two_step_verification_enforcement"
+    assert rows[0].payload["type"] == "ADMIN"
 
 
 def test_mobile_device_collects_with_compromised_flag() -> None:

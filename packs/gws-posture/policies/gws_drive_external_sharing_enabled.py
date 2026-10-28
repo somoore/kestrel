@@ -6,7 +6,7 @@ SEVERITY = "medium"
 RESOURCE_TYPE = "tenant_setting"
 DESCRIPTION = (
     "The Cloud Identity Policy API reports that Drive external sharing is set to ALLOWED "
-    "rather than ALLOWLISTED or DISALLOWED. Users can share files with any Google account "
+    "rather than ALLOWLISTED_DOMAINS or DISALLOWED. Users can share files with any Google account "
     "outside the organization. CISA SCuBA recommends restricting external sharing to "
     "allowlisted domains (GWS.DRIVEDOCS.1.1v1)."
 )
@@ -18,7 +18,7 @@ REMEDIATION = (
 COMPLIANCE = {"cisa": ["GWS-03"], "soc2": ["CC6.7"], "nist_csf": ["PR.DS-5"]}
 REQUIRES = ["google_workspace:policy_settings"]
 
-RESTRICTED_MODES = {"DISALLOWED", "ALLOWLISTED"}
+RESTRICTED_MODES = {"DISALLOWED", "ALLOWLISTED_DOMAINS"}
 
 
 def policy(resource):
@@ -26,7 +26,7 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.drive.external_sharing":
+    if setting.get("key") != "drive_and_docs.external_sharing":
         return True
     value = setting.get("value") or {}
     mode = str(value.get("externalSharingMode", "ALLOWED")).upper()

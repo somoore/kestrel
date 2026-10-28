@@ -3,21 +3,31 @@
     {
       "_subject_id": "autoforward-on",
       "setting": {
-        "key": "workspace.gmail.allow_auto_forwarding",
-        "label": "Gmail auto-forwarding allowed (tenant)",
-        "value": {"enableAutoForwarding": true}
+        "key": "gmail.auto_forwarding",
+        "value": {
+          "enableAutoForwarding": true
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "autoforward-off",
       "setting": {
-        "key": "workspace.gmail.allow_auto_forwarding",
-        "label": "Gmail auto-forwarding allowed (tenant)",
-        "value": {"enableAutoForwarding": false}
+        "key": "gmail.auto_forwarding",
+        "value": {
+          "enableAutoForwarding": false
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["autoforward-on"]
+  "expected_match_subject_ids": [
+    "autoforward-on"
+  ]
 }

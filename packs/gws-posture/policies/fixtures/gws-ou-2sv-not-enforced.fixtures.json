@@ -1,31 +1,74 @@
 {
   "rows": [
     {
-      "_subject_id": "ou-not-enforced",
+      "_subject_id": "ou-off",
       "setting": {
         "key": "security.two_step_verification_enforcement",
-        "label": "2SV enforcement mode (OU:id:ou-eng)",
-        "value": {"enforcementMode": "NOT_ENFORCED"}
+        "value": {
+          "enforcedFrom": "1970-01-01T00:00:00Z"
+        },
+        "label": "2-Step Verification enforcement (OU:id:ou-eng)"
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
+    },
+    {
+      "_subject_id": "ou-scheduled",
+      "setting": {
+        "key": "security.two_step_verification_enforcement",
+        "value": {
+          "enforcedFrom": "2099-01-01T00:00:00Z"
+        }
+      },
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
+    },
+    {
+      "_subject_id": "ou-missing-field",
+      "setting": {
+        "key": "security.two_step_verification_enforcement",
+        "value": {}
+      },
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "ou-enforced",
       "setting": {
         "key": "security.two_step_verification_enforcement",
-        "label": "2SV enforcement mode (OU:id:ou-root)",
-        "value": {"enforcementMode": "ENFORCED"}
+        "value": {
+          "enforcedFrom": "2024-03-01T00:00:00Z"
+        },
+        "label": "2-Step Verification enforcement (OU:id:ou-root)"
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "other-app",
       "setting": {
         "key": "security.two_step_verification_enforcement",
-        "value": {"enforcementMode": "NOT_ENFORCED"}
+        "value": {
+          "enforcedFrom": "1970-01-01T00:00:00Z"
+        }
       },
-      "application": {"type": "okta", "name": "Acme Okta"}
+      "application": {
+        "type": "okta",
+        "name": "Acme Okta"
+      }
     }
   ],
-  "expected_match_subject_ids": ["ou-not-enforced"]
+  "expected_match_subject_ids": [
+    "ou-off",
+    "ou-scheduled",
+    "ou-missing-field"
+  ]
 }

@@ -28,22 +28,20 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.session.reauth_settings":
+    if setting.get("key") != "security.session_controls":
         return True
     value = setting.get("value") or {}
-    session_length = value.get("sessionLength") or value.get("maxInactivity") or "PT0H"
-    return duration_hours(session_length) <= MAX_SESSION_HOURS
+    return duration_hours(value.get("webSessionDuration")) <= MAX_SESSION_HOURS
 
 
 def evidence(resource):
     setting = resource.get("setting") or {}
     application = resource.get("application") or {}
     value = setting.get("value") or {}
-    session_length = value.get("sessionLength") or value.get("maxInactivity") or "PT0H"
     return {
         "setting.key": setting.get("key"),
-        "session_length": session_length,
-        "session_hours": duration_hours(session_length),
+        "session_length": value.get("webSessionDuration"),
+        "session_hours": duration_hours(value.get("webSessionDuration")),
         "max_allowed_hours": MAX_SESSION_HOURS,
         "application.name": application.get("name"),
     }

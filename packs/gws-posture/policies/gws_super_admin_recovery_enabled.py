@@ -24,10 +24,10 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "accounts.admin_account_recovery.recovery_policy":
+    if setting.get("key") != "security.super_admin_account_recovery":
         return True
     value = setting.get("value") or {}
-    return not bool(value.get("enableAdminAccountRecovery", False))
+    return not bool(value.get("enableAccountRecovery", False))
 
 
 def evidence(resource):
@@ -35,6 +35,6 @@ def evidence(resource):
     application = resource.get("application") or {}
     return {
         "setting.key": setting.get("key"),
-        "admin_recovery_enabled": (setting.get("value") or {}).get("enableAdminAccountRecovery"),
+        "account_recovery_enabled": (setting.get("value") or {}).get("enableAccountRecovery"),
         "application.name": application.get("name"),
     }

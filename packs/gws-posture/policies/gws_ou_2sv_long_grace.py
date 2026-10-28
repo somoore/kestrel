@@ -29,10 +29,10 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "security.two_step_verification_enrollment_grace_period":
+    if setting.get("key") != "security.two_step_verification_grace_period":
         return True
     value = setting.get("value") or {}
-    grace = value.get("gracePeriod", "P0D")
+    grace = value.get("enrollmentGracePeriod")
     return grace_days(grace) <= MAX_GRACE_DAYS
 
 
@@ -42,8 +42,8 @@ def evidence(resource):
     value = setting.get("value") or {}
     return {
         "setting.key": setting.get("key"),
-        "grace_period": value.get("gracePeriod"),
-        "grace_days": grace_days(value.get("gracePeriod", "P0D")),
+        "grace_period": value.get("enrollmentGracePeriod"),
+        "grace_days": grace_days(value.get("enrollmentGracePeriod")),
         "max_allowed_days": MAX_GRACE_DAYS,
         "application.name": application.get("name"),
     }

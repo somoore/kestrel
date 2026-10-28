@@ -74,13 +74,14 @@ sources:
   policy:
     endpoint: GET https://cloudidentity.googleapis.com/v1/policies
     docs: https://cloud.google.com/identity/docs/reference/rest/v1/policies/list
-    # Each policy object wraps a `setting.value` dict whose schema depends on
-    # the policy type. The entire value dict is stored as-is so that policy
-    # functions can read any field the provider returns without requiring a
-    # normalizer change for each new field.
-    # The normalizer reads the `setting` object as a whole. Nested keys such as
-    # `setting.value` and `type` are inside that object, so they are not separate
-    # payload fields.
+    # A Policy resource: `setting.type` is the setting name with a `settings/`
+    # prefix, `setting.value` is a dict whose fields depend on that type, and
+    # `policyQuery.orgUnit` / `policyQuery.group` say where it applies. The
+    # normalizer stores the whole value dict as-is so policy functions can read
+    # any field the provider returns. `policyQuery` only decides the setting's
+    # subject (it is not a setting source), and the top-level `type` is the
+    # policy kind (ADMIN or SYSTEM) and is not read. Setting names and fields:
+    # https://cloud.google.com/identity/docs/concepts/supported-policy-api-settings
     returns:
       - setting
     synthetic: {}

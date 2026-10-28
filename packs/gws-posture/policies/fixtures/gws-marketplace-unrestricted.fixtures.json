@@ -1,23 +1,47 @@
 {
   "rows": [
     {
-      "_subject_id": "allowlist-disabled",
+      "_subject_id": "allow-all",
       "setting": {
-        "key": "workspace.marketplace_apps_allowlist",
-        "label": "Marketplace apps allowlist mode (tenant)",
-        "value": {"applicationsAllowlistEnabled": false}
+        "key": "workspace_marketplace.apps_access_options",
+        "value": {
+          "accessLevel": "ALLOW_ALL"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
-      "_subject_id": "allowlist-enabled",
+      "_subject_id": "allow-listed",
       "setting": {
-        "key": "workspace.marketplace_apps_allowlist",
-        "label": "Marketplace apps allowlist mode (tenant)",
-        "value": {"applicationsAllowlistEnabled": true}
+        "key": "workspace_marketplace.apps_access_options",
+        "value": {
+          "accessLevel": "ALLOW_LISTED_APPS",
+          "allowAllInternalApps": false
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
+    },
+    {
+      "_subject_id": "allow-none",
+      "setting": {
+        "key": "workspace_marketplace.apps_access_options",
+        "value": {
+          "accessLevel": "ALLOW_NONE"
+        }
+      },
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["allowlist-disabled"]
+  "expected_match_subject_ids": [
+    "allow-all"
+  ]
 }

@@ -23,7 +23,7 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "security.less_secure_apps_access":
+    if setting.get("key") != "security.less_secure_apps":
         return True
     value = setting.get("value") or {}
     return not bool(value.get("allowLessSecureApps", False))

@@ -56,10 +56,10 @@ _CASES = {
         "github", "sso_credential:1", {"login": "ada", "last_accessed_at": "garbled"}
     ),
     "gws-posture/gws_session_too_long": _setting(
-        "google_workspace", "workspace.session.reauth_settings", {"sessionLength": "P1M"}
+        "google_workspace", "security.session_controls", {"webSessionDuration": "P1M"}
     ),
     "gws-posture/gws_ou_2sv_long_grace": _setting(
-        "google_workspace", "security.two_step_verification_enrollment_grace_period", {"gracePeriod": "two weeks"}
+        "google_workspace", "security.two_step_verification_grace_period", {"enrollmentGracePeriod": "two weeks"}
     ),
     "slack-posture/slack_pending_app_requests": _setting("slack", "pending_app_requests", "several"),
     "okta-posture/okta_password_policy_weak": _setting("okta", "password_min_length", "twelve"),

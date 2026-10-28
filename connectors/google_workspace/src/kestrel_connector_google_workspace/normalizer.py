@@ -265,113 +265,136 @@ _DOMAIN_PAYLOAD_ALIASES: dict[str, tuple[str, ...]] = {
     "verified": ("verified",),
 }
 
-# Cloud Identity Policy type → (setting_key, category, label, description).
-# `value` is always the raw setting.value dict (value_type="object") so
-# policy functions can interrogate the provider-specific field names.
+# Cloud Identity Policy API setting type -> (setting_key, category, label, description).
+# Keys are `setting.type` as the API returns it, minus the `settings/` prefix
+# (`settings/security.password` -> `security.password`). The full list is at
+# https://cloud.google.com/identity/docs/concepts/supported-policy-api-settings
+# and the field names below are the ones the API returns. `value` is always the
+# raw `setting.value` dict (value_type="object") so policy functions read the
+# provider's own field names.
 _POLICY_TYPE_TO_SPEC: dict[str, tuple[str, str, str, str | None]] = {
     "security.two_step_verification_enforcement": (
         "security.two_step_verification_enforcement",
         "security",
-        "2SV enforcement mode",
-        "How 2-Step Verification is enforced in this organizational unit. enforcementMode: ENFORCED | NOT_ENFORCED.",
+        "2-Step Verification enforcement",
+        "enforcedFrom: RFC 3339 time from which 2-Step Verification is enforced. "
+        "The Unix epoch (1970-01-01T00:00:00Z) means enforcement is off; a future time means it is scheduled.",
     ),
-    "security.two_step_verification_enrollment_grace_period": (
-        "security.two_step_verification_enrollment_grace_period",
+    "security.two_step_verification_enrollment": (
+        "security.two_step_verification_enrollment",
         "security",
-        "2SV enrollment grace period",
-        "How long a new user has to enroll in 2SV before being required to. "
-        "gracePeriod is an ISO 8601 duration (e.g. P1D = 1 day, P0D = immediate).",
+        "2-Step Verification enrollment",
+        "allowEnrollment: whether users may enroll in 2-Step Verification.",
     ),
-    "security.two_step_verification_allowed_for_trusted_apps": (
-        "security.two_step_verification_allowed_for_trusted_apps",
+    "security.two_step_verification_grace_period": (
+        "security.two_step_verification_grace_period",
         "security",
-        "2SV bypass for trusted apps",
-        "Whether 2SV can be bypassed for trusted apps.",
+        "2-Step Verification enrollment period",
+        'enrollmentGracePeriod: how long a new user has to enroll, as a duration ("604800s").',
     ),
-    "security.less_secure_apps_access": (
-        "security.less_secure_apps_access",
+    "security.two_step_verification_device_trust": (
+        "security.two_step_verification_device_trust",
         "security",
-        "Less-secure apps access",
-        "Whether users can connect apps that use less secure sign-in technology. "
-        "allowLessSecureApps: true means LSA is permitted.",
+        "2-Step Verification device trust",
+        "allowTrustingDevice: whether users may skip the second step on a device they trust.",
     ),
-    "workspace.gmail.allow_auto_forwarding": (
-        "workspace.gmail.allow_auto_forwarding",
+    "security.two_step_verification_enforcement_factor": (
+        "security.two_step_verification_enforcement_factor",
+        "security",
+        "2-Step Verification methods",
+        "allowedSignInFactorSet: ALL | PASSKEY_ONLY | PASSKEY_PLUS_SECURITY_CODE | "
+        "PASSKEY_PLUS_IP_BOUND_SECURITY_CODE | NO_TELEPHONY.",
+    ),
+    "security.less_secure_apps": (
+        "security.less_secure_apps",
+        "security",
+        "Less secure app access",
+        "allowLessSecureApps: true means apps that use basic authentication may sign in.",
+    ),
+    "security.password": (
+        "security.password",
+        "security",
+        "Password management",
+        "allowedStrength: STRONG | WEAK; minimumLength; maximumLength; enforceRequirementsAtLogin; "
+        'allowReuse; expirationDuration as a duration ("0s" never expires).',
+    ),
+    "security.session_controls": (
+        "security.session_controls",
+        "security",
+        "Google session control",
+        'webSessionDuration: web session length as a duration ("43200s").',
+    ),
+    "security.super_admin_account_recovery": (
+        "security.super_admin_account_recovery",
+        "security",
+        "Super admin account recovery",
+        "enableAccountRecovery: whether super admins can recover their own account.",
+    ),
+    "security.user_account_recovery": (
+        "security.user_account_recovery",
+        "security",
+        "User account recovery",
+        "enableAccountRecovery: whether users and non-super admins can recover their own account.",
+    ),
+    "gmail.auto_forwarding": (
+        "gmail.auto_forwarding",
         "sharing",
-        "Gmail auto-forwarding allowed",
-        "Whether users can automatically forward all incoming mail to another address. "
-        "enableAutoForwarding: true means forwarding is allowed.",
+        "Gmail automatic forwarding",
+        "enableAutoForwarding: true means users may forward incoming mail to another address automatically.",
     ),
-    "workspace.gmail.imap_access": (
-        "workspace.gmail.imap_access",
+    "gmail.imap_access": (
+        "gmail.imap_access",
         "access",
         "Gmail IMAP access",
-        "Whether users can access Gmail via IMAP. enableImap: true means IMAP is allowed.",
+        "enableImapAccess: true means IMAP is allowed.",
     ),
-    "workspace.gmail.pop_access": (
-        "workspace.gmail.pop_access",
+    "gmail.pop_access": (
+        "gmail.pop_access",
         "access",
         "Gmail POP access",
-        "Whether users can access Gmail via POP. enablePop: true means POP is allowed.",
+        "enablePopAccess: true means POP is allowed.",
     ),
-    "workspace.drive.external_sharing": (
-        "workspace.drive.external_sharing",
+    "drive_and_docs.external_sharing": (
+        "drive_and_docs.external_sharing",
         "sharing",
-        "Drive external sharing mode",
-        "Controls who can share Drive content outside the organization. "
-        "externalSharingMode: DISALLOWED | ALLOWLISTED | ALLOWED.",
+        "Drive external sharing",
+        "externalSharingMode: DISALLOWED | ALLOWLISTED_DOMAINS | ALLOWED, plus the related "
+        "allowNonGoogleInvites, allowPublishingFiles, allowReceivingExternalFiles and warning flags.",
     ),
-    "workspace.drive.sharing_invitations_to_non_google_accounts": (
-        "workspace.drive.sharing_invitations_to_non_google_accounts",
+    "drive_and_docs.general_access_default": (
+        "drive_and_docs.general_access_default",
         "sharing",
-        "Drive sharing to non-Google accounts",
-        "Whether users can share Drive items with non-Google accounts.",
+        "Drive default access for new files",
+        "defaultFileAccess: who can open a newly created file before it is shared.",
     ),
-    "workspace.drive.allow_users_to_publish_web": (
-        "workspace.drive.allow_users_to_publish_web",
-        "sharing",
-        "Drive publish to web",
-        "Whether users can publish Google Docs to the web.",
-    ),
-    "workspace.marketplace_apps_allowlist": (
-        "workspace.marketplace_apps_allowlist",
+    "workspace_marketplace.apps_access_options": (
+        "workspace_marketplace.apps_access_options",
         "access",
-        "Marketplace apps allowlist mode",
-        "Controls which Google Workspace Marketplace apps users can install. "
-        "applicationsAllowlistEnabled: true means only approved apps are allowed.",
+        "Marketplace app access",
+        "accessLevel: ALLOW_ALL | ALLOW_LISTED_APPS | ALLOW_NONE; allowAllInternalApps.",
     ),
-    "workspace.google_takeout.export_feature": (
-        "workspace.google_takeout.export_feature",
+    "workspace_marketplace.apps_allowlist": (
+        "workspace_marketplace.apps_allowlist",
         "access",
-        "Google Takeout enabled",
-        "Whether users can export their data via Google Takeout. exportEnabled: true means Takeout is available to users.",
+        "Marketplace allowlisted apps",
+        "The allowlisted Marketplace applications and whether each is ALLOWED or BLOCKED.",
     ),
-    "accounts.admin_account_recovery.recovery_policy": (
-        "accounts.admin_account_recovery.recovery_policy",
-        "security",
-        "Super Admin self-recovery",
-        "Whether Super Admins can recover their own account using recovery contact info. "
-        "enableAdminAccountRecovery: true means self-recovery is enabled (SCuBA SHOULD disable).",
-    ),
-    "accounts.super_admin_password_recovery.recovery_policy": (
-        "accounts.super_admin_password_recovery.recovery_policy",
-        "security",
-        "Super Admin password recovery",
-        "Whether Super Admins can recover their own password.",
-    ),
-    "workspace.session.reauth_settings": (
-        "workspace.session.reauth_settings",
-        "security",
-        "Session re-authentication settings",
-        "How often users must re-authenticate. reauthMethod and maxInactivity control the session duration.",
-    ),
-    "workspace.password_policy": (
-        "workspace.password_policy",
-        "security",
-        "Password policy",
-        "Organization password strength and length requirements.",
+    "takeout.service_status": (
+        "takeout.service_status",
+        "access",
+        "Google Takeout service status",
+        "serviceState: ENABLED | DISABLED for the organizational unit.",
     ),
 }
+
+
+def _org_unit_ref(value: Any) -> str:
+    """Policy API `policyQuery.orgUnit` (`orgUnits/<id>`) as the Directory API's
+    `orgUnitId` (`id:<id>`), which is the provider id of the `org_unit` row."""
+    text = str(value or "").removeprefix("orgUnits/")
+    if not text or text.startswith("id:"):
+        return text
+    return f"id:{text}"
 
 
 def _permission_level(drive_role: str) -> str:
@@ -1149,48 +1172,59 @@ class GoogleWorkspaceNormalizer:
         return objects
 
     def _normalize_policy(self, raw: RawObject) -> list[NormalizedObject]:
-        """Cloud Identity Policy API → subject-scoped or tenant-level setting.
+        """Cloud Identity Policy API policy -> subject-scoped setting.
 
-        Each policy object maps to one setting row. The `value` is the raw
-        `setting.value` dict (value_type=object) so Python policy functions
-        can interrogate provider-specific field names without the normalizer
-        having to know every possible schema.
+        The payload is a `Policy` resource. `setting.type` names the setting
+        (`settings/security.password`) and `setting.value` holds its fields.
+        `policyQuery.orgUnit` (`orgUnits/<id>`) is the organizational unit the
+        policy applies to, and `policyQuery.group` (`groups/<id>`) is set when
+        it applies to a group inside that unit. The top-level `type` is
+        `ADMIN` or `SYSTEM`, not the setting name. Every policy names an
+        organizational unit, so a customer-wide setting is the root unit's.
 
-        OU-scoped policies carry `subject_type=group` and `subject_ref=orgUnitId`
-        so a finding names the organizational unit the policy applies to.
+        Each policy maps to one setting row whose `value` is the raw
+        `setting.value` dict (value_type=object), so policy functions read the
+        provider's own field names. The row carries `subject_type=group` and
+        the unit or group as `subject_ref`, so a finding names where the
+        setting applies.
         """
         payload = raw.payload
-        policy_type = str(payload.get("type") or (payload.get("setting") or {}).get("type") or "")
-        if not policy_type:
+        setting = payload.get("setting") or {}
+        setting_type = str(setting.get("type") or "").removeprefix("settings/")
+        if not setting_type:
             return []
-        spec = _POLICY_TYPE_TO_SPEC.get(policy_type)
+        spec = _POLICY_TYPE_TO_SPEC.get(setting_type)
         if spec is None:
-            # Unknown policy type: emit a generic setting so it is visible in the graph.
-            key = policy_type
+            # Unknown setting type: emit a generic setting so it is visible in the graph.
+            key = setting_type
             category = "access"
-            label = policy_type
-            description = f"Cloud Identity policy type {policy_type!r}."
+            label = setting_type
+            description = f"Cloud Identity Policy API setting {setting_type!r}."
         else:
             key, category, label, raw_description = spec
             description = raw_description or ""
 
-        setting_value = (payload.get("setting") or {}).get("value") or {}
-        ou = payload.get("orgUnit") or {}
-        ou_id = str(ou.get("orgUnitId") or "")
+        setting_value = setting.get("value") or {}
+        query = payload.get("policyQuery") or {}
+        ou_id = _org_unit_ref(query.get("orgUnit"))
+        group_id = str(query.get("group") or "").removeprefix("groups/")
+        scope_ref = group_id or ou_id
 
-        if ou_id:
-            provider_id_prefix = f"policy:{ou_id}"
+        if scope_ref:
+            provider_id_prefix = f"policy:{scope_ref}"
             subject_type: str | None = "group"
-            subject_ref: str | None = ou_id
+            subject_ref: str | None = scope_ref
+            scope_label = f"group:{group_id}" if group_id else f"OU:{ou_id}"
         else:
             provider_id_prefix = "policy:tenant"
             subject_type = None
             subject_ref = None
+            scope_label = "tenant"
 
         obj = setting_object(
             key=key,
             category=category,
-            label=f"{label} ({'OU:' + ou_id if ou_id else 'tenant'})",
+            label=f"{label} ({scope_label})",
             value=setting_value,
             value_type="object",
             description=description,
@@ -1199,12 +1233,12 @@ class GoogleWorkspaceNormalizer:
             subject_type=subject_type,
             subject_ref=subject_ref,
         )
-        if ou_id:
+        if scope_ref:
             obj.relationships = [
                 NormalizedRelationship(
                     edge_type="applies_to",
                     source_ref=obj.provider_id,
-                    target_ref=ou_id,
+                    target_ref=scope_ref,
                 )
             ]
         return [obj]

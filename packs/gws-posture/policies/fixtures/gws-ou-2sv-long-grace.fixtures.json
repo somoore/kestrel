@@ -1,12 +1,11 @@
 {
   "rows": [
     {
-      "_subject_id": "long-grace",
+      "_subject_id": "grace-14d",
       "setting": {
-        "key": "security.two_step_verification_enrollment_grace_period",
-        "label": "2SV enrollment grace period (tenant)",
+        "key": "security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "P14D"
+          "enrollmentGracePeriod": "1209600s"
         }
       },
       "application": {
@@ -15,12 +14,11 @@
       }
     },
     {
-      "_subject_id": "short-grace",
+      "_subject_id": "grace-7d",
       "setting": {
-        "key": "security.two_step_verification_enrollment_grace_period",
-        "label": "2SV enrollment grace period (tenant)",
+        "key": "security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "P3D"
+          "enrollmentGracePeriod": "604800s"
         }
       },
       "application": {
@@ -29,12 +27,11 @@
       }
     },
     {
-      "_subject_id": "zero-grace",
+      "_subject_id": "grace-3d",
       "setting": {
-        "key": "security.two_step_verification_enrollment_grace_period",
-        "label": "2SV enrollment grace period (tenant)",
+        "key": "security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "P0D"
+          "enrollmentGracePeriod": "259200s"
         }
       },
       "application": {
@@ -43,12 +40,11 @@
       }
     },
     {
-      "_subject_id": "grace-14d-seconds",
+      "_subject_id": "grace-zero",
       "setting": {
-        "key": "security.two_step_verification_enrollment_grace_period",
-        "label": "2SV enrollment grace period (tenant)",
+        "key": "security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "1209600s"
+          "enrollmentGracePeriod": "0s"
         }
       },
       "application": {
@@ -57,12 +53,11 @@
       }
     },
     {
-      "_subject_id": "grace-7d-seconds",
+      "_subject_id": "grace-iso-14d",
       "setting": {
-        "key": "security.two_step_verification_enrollment_grace_period",
-        "label": "2SV enrollment grace period (tenant)",
+        "key": "security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "604800s"
+          "enrollmentGracePeriod": "P14D"
         }
       },
       "application": {
@@ -72,7 +67,7 @@
     }
   ],
   "expected_match_subject_ids": [
-    "long-grace",
-    "grace-14d-seconds"
+    "grace-14d",
+    "grace-iso-14d"
   ]
 }

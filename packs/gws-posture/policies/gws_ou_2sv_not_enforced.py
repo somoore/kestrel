@@ -18,6 +18,19 @@ COMPLIANCE = {"cisa": ["GWS-01"], "cis": ["1.1"], "soc2": ["CC6.1"], "nist_csf":
 REQUIRES = ["google_workspace:policy_settings"]
 
 
+def enforcement_started(value):
+    """True once 2-Step Verification enforcement is in effect.
+
+    `enforcedFrom` is the time enforcement begins. The Unix epoch
+    (1970-01-01T00:00:00Z) is how the API says enforcement is off, a future
+    time means it is scheduled but not yet in effect, and a missing field
+    means it was never turned on."""
+    started = parse_timestamp(value.get("enforcedFrom"))
+    if started is None:
+        return False
+    return started > parse_timestamp("1970-01-01T00:00:00Z") and started <= now()
+
+
 def policy(resource):
     application = resource.get("application") or {}
     setting = resource.get("setting") or {}
@@ -25,17 +38,17 @@ def policy(resource):
         return True
     if setting.get("key") != "security.two_step_verification_enforcement":
         return True
-    value = setting.get("value") or {}
-    # ENFORCED means the policy fires only when NOT_ENFORCED.
-    return value.get("enforcementMode", "NOT_ENFORCED") == "ENFORCED"
+    return enforcement_started(setting.get("value") or {})
 
 
 def evidence(resource):
     setting = resource.get("setting") or {}
     application = resource.get("application") or {}
+    value = setting.get("value") or {}
     return {
         "setting.key": setting.get("key"),
-        "setting.value": setting.get("value"),
         "setting.label": setting.get("label"),
+        "enforced_from": value.get("enforcedFrom"),
+        "enforcement_started": enforcement_started(value),
         "application.name": application.get("name"),
     }

@@ -24,7 +24,7 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.gmail.allow_auto_forwarding":
+    if setting.get("key") != "gmail.auto_forwarding":
         return True
     value = setting.get("value") or {}
     return not bool(value.get("enableAutoForwarding", False))

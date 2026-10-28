@@ -3,21 +3,31 @@
     {
       "_subject_id": "lsa-enabled",
       "setting": {
-        "key": "security.less_secure_apps_access",
-        "label": "Less-secure apps access (tenant)",
-        "value": {"allowLessSecureApps": true}
+        "key": "security.less_secure_apps",
+        "value": {
+          "allowLessSecureApps": true
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "lsa-disabled",
       "setting": {
-        "key": "security.less_secure_apps_access",
-        "label": "Less-secure apps access (tenant)",
-        "value": {"allowLessSecureApps": false}
+        "key": "security.less_secure_apps",
+        "value": {
+          "allowLessSecureApps": false
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["lsa-enabled"]
+  "expected_match_subject_ids": [
+    "lsa-enabled"
+  ]
 }

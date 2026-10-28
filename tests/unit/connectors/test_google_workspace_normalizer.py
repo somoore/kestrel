@@ -542,66 +542,97 @@ def test_enforced_accounts_report_enforcement_true():
 # ---------------------------------------------------------------------------
 
 
-def test_policy_ou_scoped_emits_setting_with_subject_and_applies_to_edge():
-    raw = _raw(
+def _policy(setting_type, value, *, org_unit="orgUnits/ou-eng", group="", policy_type="ADMIN"):
+    """A Policy resource as the Cloud Identity API returns it: the setting name
+    is `setting.type` with a `settings/` prefix, the scope is `policyQuery`,
+    and the top-level `type` is the policy kind, not the setting name."""
+    return _raw(
         "policy",
-        "policy:ou-eng:security.two_step_verification_enforcement",
+        "policies/e1",
         {
-            "type": "security.two_step_verification_enforcement",
-            "setting": {"type": "security.two_step_verification_enforcement", "value": {"enforcementMode": "ENFORCED"}},
-            "orgUnit": {"orgUnitId": "id:ou-eng"},
+            "name": "policies/e1",
+            "customer": "customers/C01234",
+            "policyQuery": {
+                "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-eng'))",
+                "orgUnit": org_unit,
+                "group": group,
+                "sortOrder": 1.0,
+            },
+            "setting": {"type": f"settings/{setting_type}", "value": value},
+            "type": policy_type,
         },
     )
+
+
+def test_policy_ou_scoped_emits_setting_with_subject_and_applies_to_edge():
+    raw = _policy("security.two_step_verification_enforcement", {"enforcedFrom": "2024-03-01T00:00:00Z"})
 
     objects = GoogleWorkspaceNormalizer().normalize("policy", raw)
 
     assert len(objects) == 1
     obj = objects[0]
     assert obj.kind == "setting"
+    # `settings/` is stripped so the key matches the documented setting name.
     assert obj.attributes["key"] == "security.two_step_verification_enforcement"
+    assert obj.provider_id == "policy:id:ou-eng:security.two_step_verification_enforcement"
+    # `orgUnits/<id>` becomes the Directory API's `id:<id>`, the org_unit row's provider id.
     assert obj.attributes["subject_type"] == "group"
     assert obj.attributes["subject_ref"] == "id:ou-eng"
-    assert obj.attributes["value"] == {"enforcementMode": "ENFORCED"}
+    assert obj.attributes["label"] == "2-Step Verification enforcement (OU:id:ou-eng)"
+    assert obj.attributes["value"] == {"enforcedFrom": "2024-03-01T00:00:00Z"}
     assert obj.attributes["value_type"] == "object"
     assert obj.relationships[0].edge_type == "applies_to"
     assert obj.relationships[0].target_ref == "id:ou-eng"
 
 
-def test_policy_tenant_scoped_has_no_subject():
+def test_policy_top_level_type_is_the_policy_kind_not_the_setting_name():
+    """The API's top-level `type` is ADMIN or SYSTEM. Reading it as the setting
+    name keyed every live policy `ADMIN`, so no pack policy ever matched."""
+    for kind in ("ADMIN", "SYSTEM"):
+        raw = _policy("gmail.auto_forwarding", {"enableAutoForwarding": True}, policy_type=kind)
+        obj = GoogleWorkspaceNormalizer().normalize("policy", raw)[0]
+        assert obj.attributes["key"] == "gmail.auto_forwarding"
+
+
+def test_policy_group_scoped_names_the_group_not_the_org_unit():
+    raw = _policy("gmail.imap_access", {"enableImapAccess": False}, group="groups/200000000000000000001")
+
+    obj = GoogleWorkspaceNormalizer().normalize("policy", raw)[0]
+
+    assert obj.attributes["subject_type"] == "group"
+    assert obj.attributes["subject_ref"] == "200000000000000000001"
+    assert obj.provider_id == "policy:200000000000000000001:gmail.imap_access"
+    assert obj.attributes["label"] == "Gmail IMAP access (group:200000000000000000001)"
+    assert obj.relationships[0].target_ref == "200000000000000000001"
+
+
+def test_policy_without_a_scope_is_tenant_level():
     raw = _raw(
         "policy",
-        "policy:tenant:workspace.gmail.allow_auto_forwarding",
-        {
-            "type": "workspace.gmail.allow_auto_forwarding",
-            "setting": {"value": {"enableAutoForwarding": True}},
-        },
+        "policies/e2",
+        {"setting": {"type": "settings/gmail.auto_forwarding", "value": {"enableAutoForwarding": True}}},
     )
 
     obj = GoogleWorkspaceNormalizer().normalize("policy", raw)[0]
 
+    assert obj.provider_id == "policy:tenant:gmail.auto_forwarding"
     assert "subject_type" not in obj.attributes
     assert "subject_ref" not in obj.attributes
     assert obj.relationships == []
 
 
 def test_policy_unknown_type_emits_generic_setting():
-    raw = _raw(
-        "policy",
-        "policy:tenant:workspace.some_future_policy",
-        {
-            "type": "workspace.some_future_policy",
-            "setting": {"value": {"someField": "someValue"}},
-        },
-    )
+    raw = _policy("sites.service_status", {"serviceState": "ENABLED"})
 
     obj = GoogleWorkspaceNormalizer().normalize("policy", raw)[0]
 
     assert obj.kind == "setting"
-    assert obj.attributes["key"] == "workspace.some_future_policy"
+    assert obj.attributes["key"] == "sites.service_status"
+    assert obj.attributes["value"] == {"serviceState": "ENABLED"}
 
 
-def test_policy_missing_type_emits_nothing():
-    raw = _raw("policy", "policy:empty", {"setting": {"value": {}}})
+def test_policy_missing_setting_type_emits_nothing():
+    raw = _raw("policy", "policies/e3", {"type": "ADMIN", "setting": {"value": {}}})
     assert GoogleWorkspaceNormalizer().normalize("policy", raw) == []
 
 

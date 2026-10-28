@@ -26,13 +26,13 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.password_policy":
+    if setting.get("key") != "security.password":
         return True
     value = setting.get("value") or {}
-    enforced = bool(value.get("enforcePasswordPolicy", False))
+    strong = str(value.get("allowedStrength") or "").upper() == "STRONG"
     min_length = int(value.get("minimumLength") or 0)
-    # Pass only if policy is enforced AND minimum length is adequate.
-    return enforced and min_length >= MIN_PASSWORD_LENGTH
+    # Pass only if strong passwords are required AND the minimum length is adequate.
+    return strong and min_length >= MIN_PASSWORD_LENGTH
 
 
 def evidence(resource):
@@ -41,7 +41,7 @@ def evidence(resource):
     value = setting.get("value") or {}
     return {
         "setting.key": setting.get("key"),
-        "enforce_password_policy": value.get("enforcePasswordPolicy"),
+        "allowed_strength": value.get("allowedStrength"),
         "minimum_length": value.get("minimumLength"),
         "required_minimum_length": MIN_PASSWORD_LENGTH,
         "application.name": application.get("name"),

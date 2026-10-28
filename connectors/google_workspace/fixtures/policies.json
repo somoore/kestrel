@@ -2,146 +2,217 @@
   "policies": [
     {
       "name": "policies/e1000000000001",
-      "type": "security.two_step_verification_enforcement",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "security.two_step_verification_enforcement",
+        "type": "settings/security.two_step_verification_enforcement",
         "value": {
-          "enforcementMode": "NOT_ENFORCED"
+          "enforcedFrom": "1970-01-01T00:00:00Z"
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000002",
-      "type": "security.two_step_verification_enforcement",
       "customer": "customers/C0acme1234",
-      "orgUnit": {
-        "orgUnitId": "id:ou-eng"
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-eng'))",
+        "orgUnit": "orgUnits/ou-eng",
+        "group": "",
+        "sortOrder": 2.0
       },
       "setting": {
-        "type": "security.two_step_verification_enforcement",
+        "type": "settings/security.two_step_verification_enforcement",
         "value": {
-          "enforcementMode": "ENFORCED"
+          "enforcedFrom": "2024-03-01T00:00:00Z"
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000003",
-      "type": "security.two_step_verification_enrollment_grace_period",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "security.two_step_verification_enrollment_grace_period",
+        "type": "settings/security.two_step_verification_grace_period",
         "value": {
-          "gracePeriod": "P14D"
+          "enrollmentGracePeriod": "1209600s"
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000004",
-      "type": "security.less_secure_apps_access",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "security.less_secure_apps_access",
+        "type": "settings/security.less_secure_apps",
         "value": {
           "allowLessSecureApps": false
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000005",
-      "type": "workspace.gmail.allow_auto_forwarding",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.gmail.allow_auto_forwarding",
+        "type": "settings/gmail.auto_forwarding",
         "value": {
           "enableAutoForwarding": true
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000006",
-      "type": "workspace.gmail.imap_access",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.gmail.imap_access",
+        "type": "settings/gmail.imap_access",
         "value": {
-          "enableImap": true
+          "enableImapAccess": true
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000007",
-      "type": "workspace.drive.external_sharing",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.drive.external_sharing",
+        "type": "settings/drive_and_docs.external_sharing",
         "value": {
           "externalSharingMode": "ALLOWED",
-          "allowedDomains": []
+          "allowNonGoogleInvites": true,
+          "allowPublishingFiles": true,
+          "allowReceivingExternalFiles": true,
+          "warnForExternalSharing": true
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000008",
-      "type": "workspace.marketplace_apps_allowlist",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.marketplace_apps_allowlist",
+        "type": "settings/workspace_marketplace.apps_access_options",
         "value": {
-          "applicationsAllowlistEnabled": false
+          "accessLevel": "ALLOW_ALL",
+          "allowAllInternalApps": false
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000009",
-      "type": "workspace.google_takeout.export_feature",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.google_takeout.export_feature",
+        "type": "settings/takeout.service_status",
         "value": {
-          "exportEnabled": true
+          "serviceState": "ENABLED"
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000010",
-      "type": "accounts.admin_account_recovery.recovery_policy",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "accounts.admin_account_recovery.recovery_policy",
+        "type": "settings/security.super_admin_account_recovery",
         "value": {
-          "enableAdminAccountRecovery": true
+          "enableAccountRecovery": true
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000011",
-      "type": "workspace.session.reauth_settings",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.session.reauth_settings",
+        "type": "settings/security.session_controls",
         "value": {
-          "reauthMethod": "PASSWORD",
-          "maxInactivity": "PT720H",
-          "sessionLength": "PT720H"
+          "webSessionDuration": "2592000s"
         }
-      }
+      },
+      "type": "ADMIN"
     },
     {
       "name": "policies/e1000000000012",
-      "type": "workspace.password_policy",
       "customer": "customers/C0acme1234",
+      "policyQuery": {
+        "query": "entity.org_units.exists(orgUnit, orgUnit.org_unit_id == orgUnitId('ou-root'))",
+        "orgUnit": "orgUnits/ou-root",
+        "group": "",
+        "sortOrder": 1.0
+      },
       "setting": {
-        "type": "workspace.password_policy",
+        "type": "settings/security.password",
         "value": {
-          "minimumLength": 8,
-          "requireNonAlphanumeric": false,
-          "enforcePasswordPolicy": false,
           "allowedStrength": "WEAK",
-          "expiration": "P0D",
-          "reusePrevention": 0
+          "minimumLength": 8,
+          "maximumLength": 100,
+          "enforceRequirementsAtLogin": false,
+          "allowReuse": true,
+          "expirationDuration": "0s"
         }
-      }
+      },
+      "type": "ADMIN"
     }
   ]
 }

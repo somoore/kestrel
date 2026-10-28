@@ -3,30 +3,44 @@
     {
       "_subject_id": "drive-sharing-allowed",
       "setting": {
-        "key": "workspace.drive.external_sharing",
-        "label": "Drive external sharing mode (tenant)",
-        "value": {"externalSharingMode": "ALLOWED"}
+        "key": "drive_and_docs.external_sharing",
+        "value": {
+          "externalSharingMode": "ALLOWED"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "drive-sharing-allowlisted",
       "setting": {
-        "key": "workspace.drive.external_sharing",
-        "label": "Drive external sharing mode (tenant)",
-        "value": {"externalSharingMode": "ALLOWLISTED", "allowedDomains": ["partner.example.com"]}
+        "key": "drive_and_docs.external_sharing",
+        "value": {
+          "externalSharingMode": "ALLOWLISTED_DOMAINS"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "drive-sharing-disallowed",
       "setting": {
-        "key": "workspace.drive.external_sharing",
-        "label": "Drive external sharing mode (tenant)",
-        "value": {"externalSharingMode": "DISALLOWED"}
+        "key": "drive_and_docs.external_sharing",
+        "value": {
+          "externalSharingMode": "DISALLOWED"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["drive-sharing-allowed"]
+  "expected_match_subject_ids": [
+    "drive-sharing-allowed"
+  ]
 }

@@ -3,21 +3,31 @@
     {
       "_subject_id": "takeout-on",
       "setting": {
-        "key": "workspace.google_takeout.export_feature",
-        "label": "Google Takeout enabled (tenant)",
-        "value": {"exportEnabled": true}
+        "key": "takeout.service_status",
+        "value": {
+          "serviceState": "ENABLED"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "takeout-off",
       "setting": {
-        "key": "workspace.google_takeout.export_feature",
-        "label": "Google Takeout enabled (tenant)",
-        "value": {"exportEnabled": false}
+        "key": "takeout.service_status",
+        "value": {
+          "serviceState": "DISABLED"
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["takeout-on"]
+  "expected_match_subject_ids": [
+    "takeout-on"
+  ]
 }

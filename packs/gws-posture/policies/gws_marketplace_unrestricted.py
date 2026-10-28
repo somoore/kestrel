@@ -5,8 +5,8 @@ TITLE = "Google Workspace Marketplace allows any app installation"
 SEVERITY = "medium"
 RESOURCE_TYPE = "tenant_setting"
 DESCRIPTION = (
-    "The Cloud Identity Policy API reports that the Google Workspace Marketplace allowlist "
-    "is not enabled. Users can install any Marketplace application without admin approval. "
+    "The Cloud Identity Policy API reports that Google Workspace Marketplace app access is "
+    "set to allow all apps. Users can install any Marketplace application without admin approval. "
     "CISA SCuBA requires restricting Marketplace to approved apps (GWS.COMMONCONTROLS.11.1v1)."
 )
 REMEDIATION = (
@@ -17,16 +17,19 @@ REMEDIATION = (
 COMPLIANCE = {"cisa": ["GWS-11"], "soc2": ["CC6.1"], "nist_csf": ["PR.AC-1"]}
 REQUIRES = ["google_workspace:policy_settings"]
 
+# ALLOW_ALL is the only level that lets users install any app.
+RESTRICTED_LEVELS = {"ALLOW_LISTED_APPS", "ALLOW_NONE"}
+
 
 def policy(resource):
     application = resource.get("application") or {}
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.marketplace_apps_allowlist":
+    if setting.get("key") != "workspace_marketplace.apps_access_options":
         return True
     value = setting.get("value") or {}
-    return bool(value.get("applicationsAllowlistEnabled", False))
+    return str(value.get("accessLevel") or "").upper() in RESTRICTED_LEVELS
 
 
 def evidence(resource):
@@ -34,6 +37,6 @@ def evidence(resource):
     application = resource.get("application") or {}
     return {
         "setting.key": setting.get("key"),
-        "allowlist_enabled": (setting.get("value") or {}).get("applicationsAllowlistEnabled"),
+        "access_level": (setting.get("value") or {}).get("accessLevel"),
         "application.name": application.get("name"),
     }

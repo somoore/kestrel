@@ -3,21 +3,31 @@
     {
       "_subject_id": "recovery-enabled",
       "setting": {
-        "key": "accounts.admin_account_recovery.recovery_policy",
-        "label": "Super Admin self-recovery (tenant)",
-        "value": {"enableAdminAccountRecovery": true}
+        "key": "security.super_admin_account_recovery",
+        "value": {
+          "enableAccountRecovery": true
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     },
     {
       "_subject_id": "recovery-disabled",
       "setting": {
-        "key": "accounts.admin_account_recovery.recovery_policy",
-        "label": "Super Admin self-recovery (tenant)",
-        "value": {"enableAdminAccountRecovery": false}
+        "key": "security.super_admin_account_recovery",
+        "value": {
+          "enableAccountRecovery": false
+        }
       },
-      "application": {"type": "google_workspace", "name": "Google Workspace"}
+      "application": {
+        "type": "google_workspace",
+        "name": "Google Workspace"
+      }
     }
   ],
-  "expected_match_subject_ids": ["recovery-enabled"]
+  "expected_match_subject_ids": [
+    "recovery-enabled"
+  ]
 }

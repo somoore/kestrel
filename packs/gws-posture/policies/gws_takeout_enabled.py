@@ -23,10 +23,10 @@ def policy(resource):
     setting = resource.get("setting") or {}
     if application.get("type") != "google_workspace":
         return True
-    if setting.get("key") != "workspace.google_takeout.export_feature":
+    if setting.get("key") != "takeout.service_status":
         return True
     value = setting.get("value") or {}
-    return not bool(value.get("exportEnabled", False))
+    return str(value.get("serviceState") or "").upper() == "DISABLED"
 
 
 def evidence(resource):
@@ -34,6 +34,6 @@ def evidence(resource):
     application = resource.get("application") or {}
     return {
         "setting.key": setting.get("key"),
-        "takeout_enabled": (setting.get("value") or {}).get("exportEnabled"),
+        "service_state": (setting.get("value") or {}).get("serviceState"),
         "application.name": application.get("name"),
     }

@@ -50,6 +50,18 @@ started on them.
 
 ### Fixed
 
+- The Google Workspace connector now reads Cloud Identity Policy API
+  responses in the shape the API returns. The setting name is taken from
+  `setting.type` (minus its `settings/` prefix) instead of the top-level
+  `type`, which is the policy kind (`ADMIN` or `SYSTEM`), and the scope is
+  taken from `policyQuery.orgUnit` and `policyQuery.group`. The fixtures and
+  the ten `gws-posture` policies that read these settings (2-Step
+  Verification enforcement and enrollment period, less secure apps, Gmail
+  auto-forwarding, Drive external sharing, Marketplace access, Takeout, super
+  admin recovery, session length, password policy) now use the documented
+  setting names and fields, so they can match a live tenant. Before this, a
+  live sync stored every policy under the key `ADMIN` or `SYSTEM` and none of
+  the ten policies could open a finding.
 - An AI draft that inverts `policy()` (returning `True` for the rows the
   intent asks to flag) is now repaired: the repair turn gets each fixture row
   with what `policy()` must return and what it did, plus an explicit note when
